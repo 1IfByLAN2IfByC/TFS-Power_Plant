@@ -28,6 +28,7 @@ function y = Bisect(h_in, P_out, high, low, Y, tolerance)
             f_high(1) = f_mid(1);
           
         end
+        
 %reassign the midpoint value and recalculate error        
     mid = (high + low)/2;
     error = abs(high - low);      

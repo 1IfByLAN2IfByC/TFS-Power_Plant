@@ -1,4 +1,4 @@
-function y = Bisect_entropy(T_in, P_in, P_out, high, low, Y, tolerance) 
+function T_out = Bisect_entropy(T_in, P_in, P_out, high, low, Y, tolerance) 
     it = 0;
     % arg = X(1);
     % co2 = X(2);
@@ -33,7 +33,7 @@ function y = Bisect_entropy(T_in, P_in, P_out, high, low, Y, tolerance)
     error = abs(high - low);      
     end 
     
-    y = mid;  
+    T_out = mid;  
         
     end 
     
