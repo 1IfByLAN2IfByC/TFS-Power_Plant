@@ -30,7 +30,7 @@ function eff = turbine(T_in, P_in, T_out, P_out, Y)
 	state_out(1,3:4) = propertycalc(T_out, P_out, Y); 
 
 	%RUN A BISECTION AROUND THE STATE IN ENTROPY TO FIND T_OUT_S
-	state_out_s(1,1) = Bisect_entropy(state_in(1,1), state_in(1,2), state_out(1,2), 2*T_out, .5*T_out, Y, .0001 );
+	state_out_s(1,1) = Bisect_entropy(state_in(1,1), state_in(1,2), state_out(1,2), 2*T_out, .5*T_out, Y, .0000001 );
 	state_out_s(1,2) = P_out;
 	state_out_s(1,3:4) = propertycalc(state_out_s(1,1), state_out(1,2), Y); 
 	

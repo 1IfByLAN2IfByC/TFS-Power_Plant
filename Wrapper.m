@@ -8,15 +8,16 @@
 %	mass_fract.m
 
 % LAST MODIFIED: 
-% 	3/28/13
+% 	3/31/13
 %
 %%
 
 %DEFINE INPUT OPERATING PARAMETERS
+tic
 P_0 = 14.17; %psi
 T_0 = 65; %F
 T_out = 996; %F
-RH_0 = .60; 
+RH_0 = .6; 
 ALT = 530; %ft 
 m_in = 189.7; %lb/s
 P_loss_in = 1; %kpa
@@ -25,6 +26,7 @@ LHV = 20185; %BTU/lb
 Y = [.01, 0, .78, .21, 0];
 Y_exh = [.01, .034, .75, .13, .0751 ];
 M = [39.948 44.01 28.013 31.99 18.015]; %kg/kmol
+
 
 %%
 
@@ -61,11 +63,15 @@ LHV = toSI(LHV, 'h');
 %%
 
 % DECOMPOSE THE COMPOSITION VECTOR TO EACH CONSTITUIENT GAS
-Y = wet_air(RH_0, T_0, P_0); 
+Y = wet_air(RH_0, T_0, P_0)
 
 %%
 
-%CALCULATE THE PRESSURE LOSS THROUGH STAGE 1
+% ADD CHILLING UNIT TO MORE REALISTICALLY MODEL PLANT
+
+
+
+% CALCULATE THE PRESSURE LOSS THROUGH STAGE 1
 state0(1,1) = T_0;
 state0(1,2) = P_0;
 % Y = wet_air()
@@ -95,29 +101,29 @@ state4(1, 3:4) = state4(1, 3:4);
 m_fuel = ( m_in*( state4(3) - state3(3) ) ) / (LHV - state4(3) )
 
 %FIND STATE 5  (FIRST TURBINE)
-T_eff_lp = turbine( state4(1), state4(2), state5(1), state5(2), Y);
+T_eff_lp = Turbine( state4(1), state4(2), state5(1), state5(2), Y);
 state5(1, 3:4) = propertycalc(state5(1), state5(2), Y);
 
 %WORK BACKWARDS FROM EXIT STATE 
 %FINAL STATE 
-state7(1,1:2) = [T_0 ,P_0]; 
+state7(1,1:2) = [T_out ,P_0]; 
 state7(1,3:4) = propertycalc(state7(1), state7(2), Y_exh);
 
 %STATE 6 (LEAVING FINAL TURBINE)
-state6(1,1:2) = [T_out, P_0 - P_loss_out];
+state6(1,1:2) = [T_out, P_0 + P_loss_out];
 state6(1,3:4) = propertycalc(state6(1), state6(2), Y_exh);
-T_eff_hp = turbine(state5(1), state5(2), state6(1), state6(2), Y_exh);
+T_eff_hp = Turbine(state5(1), state5(2), state6(1), state6(2), Y_exh);
 
 
 %CREATE PROPERTY ARRAY
 SYSTEM = [ [state0]; [state1]; [state2]; [state3]; [state4]; [state5]; [state6]; [state7] ];
-eff_comp_lp
-eff_comp_hp
+T_eff_hp
+T_eff_lp
 
 printmat(SYSTEM)
 
 
-
+toc
 
 
 
