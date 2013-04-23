@@ -22,7 +22,6 @@ ALT = 530; %ft
 m_in = 189.7; %lb/s
 P_loss_in = 1; %kpa
 P_loss_out = 2.5; %kpa
-LHV = 20185; %BTU/lb
 Y = [.01, 0, .78, .21, 0];
 Y_exh = [.01, .034, .75, .13, .0751 ];
 M = [39.948 44.01 28.013 31.99 18.015]; %kg/kmol
@@ -58,7 +57,6 @@ m_in = toSI(m_in, 'm_dot');
 state5(1,1) = toSI(state5(1,1), 'T');
 state5(1,2) = toSI(state5(1,2), 'P');
 state4(1,1) = toSI(state4(1,1), 'T'); 
-LHV = toSI(LHV, 'h');
 
 %%
 
@@ -67,10 +65,13 @@ Y = wet_air(RH_0, T_0, P_0)
 
 %%
 
+<<<<<<< HEAD
 % ADD CHILLING UNIT TO MORE REALISTICALLY MODEL PLANT
 
 
 
+=======
+>>>>>>> NEW: com_solv.m & fuelprop.m
 % CALCULATE THE PRESSURE LOSS THROUGH STAGE 1
 state0(1,1) = T_0;
 state0(1,2) = P_0;
