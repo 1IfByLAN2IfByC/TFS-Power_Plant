@@ -18,7 +18,7 @@
 % Last Modified:
 % 	3/24/13
 %%
-function state = compressor(T_in, P_in, r_p, eff, Y)
+function state = compressor(state_in, r_p, eff, Y)
 	state = [];
 
 	%DECOMPOSE THE COMPOSITION VECTOR TO EACH CONSTITUIENT
@@ -29,11 +29,11 @@ function state = compressor(T_in, P_in, r_p, eff, Y)
  %    h20 = X(5);
 
 	%CALCULATE THE ENTHALPY IN
-	h_in = propertycalc(T_in, P_in, Y); 
+	h_in = state_in(3);
 
 	%CALCULATE THE OUTPUT PROPERTIES BASED ON THE PRESSURE RATIO
-	P_out = r_p * P_in; 
-	T_out = Bisect_entropy(T_in, P_in, P_out, T_in*2, T_in, Y, .0001); %isentropic Tout
+	P_out = r_p * state_in(2); 
+	T_out = Bisect_entropy(state_in, P_out, state_in(1)*2, state_in(1), Y, .0001); %isentropic Tout
 
 	h_and_s = propertycalc(T_out, P_out, Y); %isentropic enthalpy and entropy
 

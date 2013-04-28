@@ -19,9 +19,18 @@
 	% AF_mol = Fuel Air Ratio in molar basis
 	% AF_mass = Fuel Air Ratio in mass basis
 
+	
+% Created:
+	%   Michael Lee
+	%   The University of Texas at Austin
+	% Last Modified:
+	%   3/20/13
+
+%%
 
 
-function Fuel = fuelprop(Fuel_Composition, Fuel_Temp, Fuel_Pressure, T_out)
+
+function Fuel = fuelprop(Fuel_Composition, Fuel_Temp, Fuel_Pressure, T_out, Stoich)
 
 syms x
 
@@ -35,6 +44,7 @@ syms x
 h_form = [(-74.9*1000), (-84.72*1000), (-103.9*1000), (-147.24*1000), (-173.5*1000), (-198.8*1000) ];	%kJ/kM
 s_form = [186.3, 229.5, 270.09, 231, 263.47 , 289.5]; 
 M = [16.043, 30.7, 44.094, 58.124, 72.15, 86.18]; 
+h_form_product = [(-393.8*1000), (-242*1000)]; % CO2, H2O
 
 [rows, columns] = size(Fuel_Composition);
 cp_fuel = { 
@@ -48,33 +58,21 @@ cp_fuel = {
 
 	}; 
 
-
-% create matrix with the amount of carbon in each hydrocarbon
-% C H 
-stoich = [
-1, 4;
-2, 6];
-% 3, 8; 
-% 4, 10;
-% 5, 12;
-% 6, 14;
-% ];
-
-% calculate the amount of carbon and hydrogen in the fuel inputs and the amount
-% of oxygen required
-C = sum( stoich(:, 1) .* Fuel_Composition') ;
-H = sum( stoich(:, 2) .* Fuel_Composition') ; 
-O_req = sum( (H/4) + C) ; 
-
 % create inline functions for integration
-meth = inline(cp_fuel{1});
-prop = inline(cp_fuel{2});
+for i = 1:columns
 
-% preform numeric integration. REQUIRE SYMBOLIC TOOLKIT 
-Fuel = zeros(columns, 2);
-Fuel(1,1) = quad(meth, 273, T_out);
-Fuel (2,1) = quad(prop, 273, T_out);
-% h out fuel known 
+	Y{i} = inline(cp_fuel{i}); 
+
+	end
+
+% preform numeric integration for enthalpy. REQUIRE SYMBOLIC TOOLKIT 
+Fuel = zeros(columns, 3);
+
+for i = 1:columns
+	
+	Fuel(i, 2) = quad(Y{i}, 298, Fuel_Temp); 
+
+	end
 
 % find the entropy of the mixture
 % for i = 1 : length(cp_fuel); 
@@ -86,14 +84,14 @@ Fuel (2,1) = quad(prop, 273, T_out);
 
 % add in formation values to total
 for m = 1: columns
-
-		Fuel(m, 1) = Fuel(m , 1) + h_form(m);
-		Fuel(m, 2) = Fuel(m, 2) + s_form(m);
+		Fuel(m, 1) = M(m); 
+		Fuel(m, 2) = Fuel(m , 2) + h_form(m);
+		Fuel(m, 3) = Fuel(m, 3) + s_form(m);
 
 	end
 
 
-
+Fuel
 
 for i = 1 : length(Fuel_Composition) 
     
@@ -101,8 +99,10 @@ for i = 1 : length(Fuel_Composition)
     
     end
 
-% output vector 
+Fuel
 
+% calculate the lower heating value of the fuel
+LHV = sum( Fuel(:, 2)) - ( Stoich(1) * h_form_product(1) ) - ( Stoich(2) * h_form_product(2) ) 
 
 
 

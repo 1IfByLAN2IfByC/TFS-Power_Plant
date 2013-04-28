@@ -44,8 +44,6 @@ function h = enthalpy(T)
    h = H ./ M ;
    h= h + h_ref;
 
-
-
 end
     
    

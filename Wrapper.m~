@@ -40,7 +40,7 @@ m_bl = 0; %parasitic bleed percent
 
 % efficiencies
 	eff_comp_lp = .82;
-	eff_comp_hp = .94;
+	eff_comp_hp = .78;
 	Gen_eff = .977;
 
 state4(1,1) = T_fire; %F 
