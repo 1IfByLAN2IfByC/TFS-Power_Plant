@@ -1,5 +1,3 @@
-
-
 function stoich = com_solv(Fuel_composition, Air_composition, Excess)
 % create matrix with the amount of carbon in each hydrocarbon
 % C H 
@@ -22,11 +20,12 @@ O_req = sum( (H/4) + C) ;
 
 % find the scaling factor needed to get required oxygen
 Scale = O_req / Air_composition(4);
-Scale = Scale * Excess
+Scale = Scale * Excess;
+
 Air_composition = Air_composition * Scale;
 stoich = [Air_composition(1), (Air_composition(2) + C ), Air_composition(3)...
     (Air_composition(4) - O_req), (Air_composition(5) + H/2)]; 
 
 % normalize the final output to get exhaust composition in volumetric fraction
 stoich = [stoich ./ sum(stoich);
-C, (H/2), O_req, Scale, 0 ]
+C, (H/2), O_req, Scale, 0 ];

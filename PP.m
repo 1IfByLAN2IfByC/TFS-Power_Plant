@@ -11,29 +11,26 @@
 % 	3/31/13
 %
 %%
+function metrics = PP(RH_0, T_0, T_fire, eff_comp_lp, eff_comp_hp, m_in)
 
 %DEFINE INPUT OPERATING PARAMETERS
 tic
 P_0 = 14.17; %psi
-T_0 = 65; %F
+% T_0 = 65; %F
 T_out = 996; %F
-RH_0 = .6; 
+% RH_0 = .6; 
 ALT = 530; %ft 
-m_in = 189.7; %lb/s
+% m_in = 189.7; %lb/s
 P_loss_in = 1; %kpa
 P_loss_out = 2.5; %kpa
 Y = [.01, 0, .78, .21, 0];
 M = [39.948 44.01 28.013 31.99 18.015]; %kg/kmol
 % LHV = 45806;
 fuel = [.5 0 .5 0 0 0 0 0];
-T_fire = 2200;
+% T_fire = 2200;
     
 %%
 
-
-for i = 1:13
-
-    T_fire = 2000 + 50*i
 % INPUT DESIGN PARAMETERS 
 % compression ratios
 	r_lp = 6; 
@@ -43,8 +40,8 @@ m_by = 0; %bypass mass flow percent
 m_bl = 0; %parasitic bleed percent
 
 % efficiencies
-	eff_comp_lp = .82;
-	eff_comp_hp = .84;
+	% eff_comp_lp = .82;
+	% eff_comp_hp = .84;
 	Gen_eff = .977;
 
 state4(1,1) = T_fire; %F 
@@ -133,15 +130,16 @@ p_gen = m_in * (state5(3) - state6(3));
 SYSTEM = [ [state0]; [state1]; [state2]; [state3]; [state4]; [state5]; [state6]; [state7] ];
 T_eff_hp;
 T_eff_lp;
-therm_eff = ( state5(3) - state6(3) ) / (state4(3) - state3(3));
+% therm_eff = ( state5(3) - state6(3) ) / (state4(3) - state3(3));
+therm_eff = ( (m_in+m_fuel)*( state5(3) - state6(3) ) ) / ( (m_in +m_fuel) * state4(3) - m_in*state3(3));
 p_gen = m_in * (state5(3) - state6(3));
 heat_rate = ( state4(3) - state3(3) ) / ((state5(3) - state6(3)) * Gen_eff) ;
 
 %printmat(SYSTEM)
-metrics(i,:) = [RH_0, elec_gen, heat_rate, therm_eff]
+metrics = [T_0, elec_gen, heat_rate, therm_eff];
 
-    end
-   
+  
+ 
 toc
 
 

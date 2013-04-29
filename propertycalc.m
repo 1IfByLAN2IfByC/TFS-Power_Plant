@@ -24,6 +24,7 @@ C_v_mix = dot(X, C_v);
 C_p_mix = dot(X, C_p);
 
 H_mix = enthalpy(T);
+H_mix_mol = H_mix .* M .* Y;
 H_mix = dot(X, H_mix);
 U_mix = H_mix - (R_mix * T);
 

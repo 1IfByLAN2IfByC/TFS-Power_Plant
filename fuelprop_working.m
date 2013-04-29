@@ -30,7 +30,7 @@
 
 
 
-function Fuel = fuelprop(Fuel_Composition, Fuel_Temp, Fuel_Pressure, T_out, Stoich)
+function LHV = fuelprop(Fuel_Composition, Fuel_Temp, Fuel_Pressure, T_out, Stoich)
 
 syms x
 
@@ -91,18 +91,15 @@ for m = 1: columns
 	end
 
 
-Fuel
-
 for i = 1 : length(Fuel_Composition) 
     
     Fuel(i, :) = Fuel(i, :) .* Fuel_Composition(i);
     
-    end
-
-Fuel
+end
 
 % calculate the lower heating value of the fuel
-LHV = sum( Fuel(:, 2)) - ( Stoich(1) * h_form_product(1) ) - ( Stoich(2) * h_form_product(2) ) 
+LHV = sum( Fuel(:, 2)) - ( Stoich(1) * h_form_product(1) ) - ( Stoich(2) * h_form_product(2) );
+
 
 
 
