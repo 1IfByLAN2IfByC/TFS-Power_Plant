@@ -51,6 +51,10 @@ function state_out = turbine_hp(state_in, W_comp, eff_turb, Y)
 	 state_in(1)/2, Y, .0001); %actual T_out
 
 	% fix outlet state 
+<<<<<<< HEAD
+=======
+
+>>>>>>> DELETE
 	state_out(1:2) = [T_out, P_out];
 	state_out(3:4) = propertycalc(T_out, P_out, Y);
 

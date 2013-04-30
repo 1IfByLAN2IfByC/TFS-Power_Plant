@@ -17,6 +17,7 @@ C_v = C_p - R;
 C_v_ref = (cp(300) - 8.31441) ./M;
 S_o = entropy(T, P, C_p);
 
+
 %calculate mixture properties
 R_mix = dot(X, R);
 
@@ -29,11 +30,8 @@ H_mix = dot(X, H_mix);
 U_mix = H_mix - (R_mix * T);
 
 %calculate entropy of mixing
-for i = [1:4]
-    
-    S_mix(i) = ( S_o(i) .* X(i) );
-    
-end
+  
+S_mix = S_o .* X;    
 
 %replace NaN in entropy with zeros
 k = find(isnan(S_mix));
