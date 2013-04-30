@@ -42,6 +42,9 @@ function state_out = turbine_hp(state_in, W_comp, eff_turb, Y)
 	% find pressure out from guessing P until s = s_in | P_s = P_a
 	P_out = Bisect_entropy_pressure(state_ise, T_s, state_in(2)*3, ...
 	 state_in(2)/3, Y, .001);
+ 
+    P_in = state_in(2)
+    P_out 
 	
 	% frist turbine is backwork only
 	h_find = h_in - W_comp;

@@ -1,4 +1,4 @@
-function P_out = Bisect_entropy(state_in, T_out, high, low, Y, tolerance) 
+function P_out = Bisect_entropy_pressure(state_in, T_out, high, low, Y, tolerance) 
     it = 0;
     % arg = X(1);
     % co2 = X(2);
@@ -9,8 +9,8 @@ function P_out = Bisect_entropy(state_in, T_out, high, low, Y, tolerance)
     mid = (high + low)/2;
     IN = state_in;
 
-    f_high = propertycalc(T_out, high, Y) - IN(4);
-    f_low = propertycalc(T_out, low, Y) - IN(4);
+    f_high = propertycalc(T_out, low, Y) - IN(4)
+    f_low = propertycalc(T_out, high, Y) - IN(4)
     
     error = abs(f_high - f_low);
     while (error) > tolerance 
@@ -19,9 +19,9 @@ function P_out = Bisect_entropy(state_in, T_out, high, low, Y, tolerance)
 %inbetween the two values
         it = it+1;
         mid = (high + low)/2;
-        f_mid = propertycalc(T_out, mid, Y) - IN(4);
+        f_mid = propertycalc(T_out, mid, Y) - IN(4)
        
-        if ( sign(f_high(2)) ~= sign(f_mid(2)) ) %root in [mid, high]
+        if ( sign(f_high(2)) == sign(f_mid(2)) ) %root in [mid, high]
             low = mid;
             f_low(2) = f_mid(2);
                 

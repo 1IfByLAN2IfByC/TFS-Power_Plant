@@ -9,7 +9,7 @@ function T_out = Bisect_entropy(state_in, P_out, high, low, Y, tolerance)
     mid = (high + low)/2;
     IN = state_in;
 
-    f_high = propertycalc(high, P_out, Y) - IN(4)
+    f_high = propertycalc(high, P_out, Y) - IN(4);
     f_low = propertycalc(low, P_out, Y) - IN(4);
     
     error = abs(f_high - f_low);

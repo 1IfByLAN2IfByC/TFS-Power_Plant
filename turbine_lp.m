@@ -7,7 +7,7 @@ function state_out = turbine_lp(state_in, turb_eff, Y, P_out)
 	% find h_out_s
 	state_out_s(1:2) = [T_out_s, P_out];
 	state_out_s(3:4) = propertycalc(T_out_s, P_out, Y);
-
+    
 	% find h_out_actual from eff. definition
 	h_out_actual = state_in(3) - (state_in(3) - state_out_s(3))* ...
 	turb_eff;
