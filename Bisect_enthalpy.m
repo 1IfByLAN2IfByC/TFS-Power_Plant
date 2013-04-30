@@ -1,4 +1,4 @@
-function y = Bisect(h_in, P_out, high, low, Y, tolerance) 
+function y = Bisect_enthalpy(h_in, P_out, high, low, Y, tolerance) 
     it = 0;
     % arg = X(1);
     % co2 = X(2);
