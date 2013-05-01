@@ -1,7 +1,7 @@
                                              
 function y = fuelcomp( y_fuel,y_air, t1, t2)  %y_fuel = [y_meth,y_eth,y_pro,y_but,y_pent,y_hex,y_co2,y_no2] y_air = [ar, co2,n2,o2,h2o]
-
-
+%y_fuel = [.85 .06 .02 .01 0 0 0 .06];
+%y_air = [0.0099,0,0.7700,0.2073,0.0128];
 form_meth = -74900;
 form_eth = -84720;
 form_pro = -103900;
@@ -20,17 +20,23 @@ Rfuel = 0;
 M_air = [39.948,44.01,28.01,32,18.015];
 M_fuel = [16.041,30.067,44.092,58.118,72.144,86.169,44.01,28.016];
 M_new = [0,0,0,0,0,0,0,0];
+
+M_M_air = sum( dot(M_air, y_air)) ;
+
+
 for i =1:8
+    
     M_new(i) = y_fuel(i)*M_fuel(i);
     Rfuel = Rfuel + R(i)*y_fuel(i)*M_fuel(i)/30.06;
-end
+    
+    end
 Rfuel;
 stoich_oxy = 0;
 stoich_h2o = 0;
 stoich_co2 = 0;
 
 
-wat_norm = y_air(5)/y_air(4);
+wat_norm = y_air(5)/y_air(4)
 nit_norm = y_air(3)/y_air(4);
 ar_norm = y_air(1)/y_air(4);
 
@@ -45,14 +51,14 @@ for i=1:6
    stoich_h2o = stoich_h2o + h2o(i)*y_fuel(i);
 end
 
-a = stoich_oxy;          %coefficient of air reactant
-b = stoich_co2 +y_fuel(7);    %coefficient of CO2 product
-c = stoich_h2o +a*wat_norm;          %coefficient of water product
-d = a*nit_norm + y_fuel(8);       %coefficient of nitrogen product
-e = a*ar_norm;
+a = stoich_oxy          %coefficient of air reactant
+b = stoich_co2 +y_fuel(7)   %coefficient of CO2 product
+c = stoich_h2o         %coefficient of water product
+d = a*nit_norm + y_fuel(8)       %coefficient of nitrogen product
+e = a*ar_norm
 tot = b+c+d+e; 
 
-exhaust = [e/tot,b/tot,d/tot,0,c/tot];
+
 fuelweight = sum(M_new);
 reactant_form = 0;
 
@@ -75,20 +81,23 @@ initial = 0;
 
 while abs(LHV - initial)/LHV >.01
 
-initial = (e*h_mix_prod(1)+e*x*h_mix_prod(1)+a*x*h_mix_prod(4)+b*h_mix_prod(2)+c*h_mix_prod(5)+d*h_mix_prod(3)+d*x*h_mix_prod(3))...
-    -(e*h_mix_reac(1)+e*x*h_mix_reac(1)+a*x*h_mix_reac(4)+a*h_mix_reac(4)+d*h_mix_reac(3)+d*x*h_mix_reac(3));
+initial = (a*x*h_mix_prod(4)+b*h_mix_prod(2)+(c)*h_mix_prod(5)+a*x*wat_norm*h_mix_prod(5)+a*wat_norm*h_mix_prod(5)+d*h_mix_prod(3)+d*x*h_mix_prod(3))...
+    -(a*x*h_mix_reac(4)+a*h_mix_reac(4)+a*wat_norm*h_mix_reac(5)+a*x*wat_norm*h_mix_reac(5)+d*h_mix_reac(3)+d*x*h_mix_reac(3));
 
 x = x+.001;
 end
   
 % recalculate the volummeteric compositon of the exhaust gases
-x = x-.001; 
-tot = x*(a+d+e) + e + d + c + b;
-exhaust  = [ (e+e*x), b, (d+d*x) , a*x, c] ./ tot;  
+x = x-.001
+
+tot = x*(a+d+e) + e + d +c + a*x*wat_norm +a*wat_norm + b;
+exhaust  = [ (e+e*x), b, (d+d*x) , a*x, (c+a*x*wat_norm +a*wat_norm)] ./ tot 
 y = [LHV,fuelweight,];
 
 % calculate the air-fuel ratio
 AF = (a * (1+x)) / y_air(4);
+AF = AF * (M_M_air/fuelweight)
+
 
 % calculate the net entropy generated
 net_s = -sum( dot(y_fuel, s_form_react) ) +  (b*s_form_prod(2) + c*s_form_prod(5) );

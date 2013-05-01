@@ -20,7 +20,6 @@
 %%
 function state = compressor(state_in, r_p, eff, Y)
 	state = [];
-
 	%DECOMPOSE THE COMPOSITION VECTOR TO EACH CONSTITUIENT
  %	  arg = X(1);
  %    co2 = X(2);
