@@ -6,7 +6,6 @@ function T_out = Bisect_entropy(state_in, P_out, high, low, Y, tolerance)
     % oxy = X(4);
     % h20 = X(5);
 
-    mid = (high + low)/2;
     IN = state_in;
 
     f = @(T) propertycalc(T, P_out, Y) - IN(4);

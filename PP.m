@@ -27,7 +27,6 @@ Y = [.01, 0, .78, .21, 0];
 M = [39.948 44.01 28.013 31.99 18.015]; %kg/kmol
 % LHV = 45806; %kJ/kg
 fuel = [.85 .06 .02 .01 0 0 0 .06];
-% T_fire = 2200; %F
 
     
 %%
@@ -96,14 +95,13 @@ state3(1)
 %state4(1, 3:4) = propertycalc(state4(1,1), state4(1,2), Y);
 %state4(1, 3:4) = state4(1, 3:4);
 
-state3(2)
-combustor_out = fuelcomp(fuel, Y, state3(1,1), 1477);
+combustor_out = fuelcomp(fuel, Y, state3(1,1), toSI(T_fire,'T'));
 exhaust = combustor_out(1,:)
 AF = combustor_out(2,2);
 LHV = combustor_out(2,1);
-% s_form = combustor_out(2,3);
 state4(2) = state3(2);
-state4(3:4) = propertycalc(toSI(2200,'T'), state3(2), exhaust)
+state4(3:4) = propertycalc(toSI(T_fire,'T'), state3(2), exhaust)
+
 %ENERGY BALANACE AROUND THE COMUBSTOR TO FIND RATE OF FUEL IN
 % m_fuel = ( m_in*( state4(3) - state3(3) ) ) / (LHV - state4(3) )
 m_fuel = m_in / AF;
@@ -112,16 +110,15 @@ m_fuel = m_in / AF;
 %FIND STATE 5  (FIRST TURBINE)
 % T_eff_lp = Turbine_state_in(state4, state5(1), state5(2), exhaust);
 % state5(1, 3:4) = propertycalc(state5(1), state5(2), exhaust);
+
 W_comp = (state2(3)-state1(3)) + (state3(3) - state2(3))
 state5 = turbine_hp(state4, W_comp, eff_turb_hp, exhaust );
 W_turb_hp = state4(3)-state5(3)
-% state5 = turbine_lp(state4, eff_turb_hp, exhaust, state5(2) );
 
 %WORK BACKWARDS FROM EXIT STATE 
 %FINAL STATE 
 % state7(1,1:2) = [T_out,P_0]; 
 % state7(1,3:4) = propertycalc(state7(1), state7(2), exhaust);
-
 
 % account for pressure loss account VIVG
 P_turbine_lp = P_0 + P_loss_out;
@@ -144,8 +141,6 @@ p_gen = m_in * (state5(3) - state6(3));
 %CREATE PROPERTY ARRAY
 SYSTEM = [ [state0]; [state1]; [state2]; [state3]; [state4]; [state5]; [state6]; [state7] ];
 
-% therm_eff = ( state5(3) - state6(3) ) / (state4(3) - state3(3));
-% therm_eff = ( (m_in+m_fuel)*( state5(3) - state6(3) ) ) / ( (m_in +m_fuel) * state4(3) - m_in*state3(3));
 Q_in = LHV*m_fuel
 therm_eff = (m_in+m_fuel)*( state5(3) - state6(3) ) / (LHV*m_fuel);
 p_gen = m_in * (state5(3) - state6(3));
@@ -153,10 +148,18 @@ heat_rate = ( (LHV*m_fuel)*1.055) / ((m_in+m_fuel)*(state5(3) - state6(3)) * Gen
 
 T_out_hp = state5(1)
 P_out_hp = state5(2)
+T_out_lp = state6(1)
 
-%printmat(StYSTEM)
-metrics = [T_0, RH_0, T_fire, eff_turb_lp, eff_comp_lp , elec_gen, heat_rate, therm_eff];
-
+% metrics = [T_0, RH_0, T_fire, eff_turb_lp, eff_comp_lp , elec_gen, heat_rate, therm_eff];
+metrics =[
+state1;
+state2;
+state3;
+state4;
+state5
+state6;
+state7
+]
   
  
 toc
